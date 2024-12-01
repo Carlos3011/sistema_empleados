@@ -1,0 +1,55 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<h2>Solicitar Permiso</h2>
+<form action="/empleados/permisos" method="POST" id="form-permiso">
+    <label for="id_empleado">Empleado:</label>
+    <select name="id_empleado" id="id_empleado" class="form-select">
+        {% for empleado in empleados %}
+        <option value="{{ empleado.id_empleado }}">{{ empleado.nombre }} {{ empleado.apellido }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="tipo_permiso" class="mt-3">Tipo de Permiso:</label>
+    <input type="text" name="tipo_permiso" id="tipo_permiso" class="form-control" placeholder="Ejemplo: Vacaciones" required>
+
+    <label for="fecha_inicio" class="mt-3">Fecha de Inicio:</label>
+    <input type="datetime-local" name="fecha_inicio" id="fecha_inicio" class="form-control" required>
+
+    <label for="fecha_fin" class="mt-3">Fecha de Fin:</label>
+    <input type="datetime-local" name="fecha_fin" id="fecha_fin" class="form-control" required>
+
+    <button type="submit" class="btn btn-primary mt-3">Solicitar</button>
+</form>
+
+<script>
+    // SweetAlert para manejar el envío exitoso
+    document.getElementById("form-permiso").onsubmit = function(event) {
+        event.preventDefault();
+        const form = event.target;
+
+        fetch(form.action, {
+            method: form.method,
+            body: new FormData(form)
+        })
+        .then(response => response.json())
+        .then(data => {
+            Swal.fire({
+                title: '¡Permiso solicitado!',
+                text: data.message,
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+            });
+            form.reset();
+        })
+        .catch(() => {
+            Swal.fire({
+                title: 'Error',
+                text: 'No se pudo enviar la solicitud. Inténtalo nuevamente.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
+        });
+    };
+</script>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<h2>Registrar Asistencia</h2>
+<form action="/empleados/lista" method="POST" id="form-asistencia">
+    <label for="id_empleado">Empleado:</label>
+    <select name="id_empleado" id="id_empleado" class="form-select">
+        {% for empleado in empleados %}
+        <option value="{{ empleado.id_empleado }}">{{ empleado.nombre }} {{ empleado.apellido }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="tipo_evento" class="mt-3">Tipo de Evento:</label>
+    <select name="tipo_evento" id="tipo_evento" class="form-select">
+        <option value="entrada">Entrada</option>
+        <option value="salida_a_comer">Salida a Comer</option>
+        <option value="regreso_de_comer">Regreso de Comer</option>
+        <option value="salida_final">Salida Final</option>
+    </select>
+
+    <label for="comentario" class="mt-3">Comentario (opcional):</label>
+    <input type="text" name="comentario" id="comentario" class="form-control">
+
+    <button type="submit" class="btn btn-primary mt-3">Registrar</button>
+</form>
+
+<script>
+    // SweetAlert para manejar el envío exitoso
+    document.getElementById("form-asistencia").onsubmit = function(event) {
+        event.preventDefault();
+        const form = event.target;
+
+        fetch(form.action, {
+            method: form.method,
+            body: new FormData(form)
+        })
+        .then(response => response.json())
+        .then(data => {
+            Swal.fire({
+                title: '¡Éxito!',
+                text: data.message,
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+            });
+            form.reset();
+        })
+        .catch(() => {
+            Swal.fire({
+                title: 'Error',
+                text: 'No se pudo registrar la asistencia. Inténtalo nuevamente.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
+        });
+    };
+</script>
+{% endblock %}
