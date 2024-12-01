@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Registro de Asistencia</h1>
+<p>Bienvenido, su ID de empleado es: {{ empleado_id }}</p>
+
+<div class="d-flex flex-column mt-3">
+    <button class="btn btn-primary mb-2" onclick="registrarAsistencia('entrada')">Registrar Entrada</button>
+    <button class="btn btn-secondary mb-2" onclick="registrarAsistencia('salida_a_comer')">Salida a Comer</button>
+    <button class="btn btn-success mb-2" onclick="registrarAsistencia('regreso_de_comer')">Regreso de Comer</button>
+    <button class="btn btn-danger" onclick="registrarAsistencia('salida_final')">Registrar Salida</button>
+</div>
+
+<script>
+function registrarAsistencia(evento) {
+    fetch(`/asistencia_registro?token={{ token }}&tipo_evento=${evento}`, { method: "POST" })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire("Éxito", "Asistencia registrada correctamente.", "success");
+            } else {
+                Swal.fire("Error", data.message || "No se pudo registrar la asistencia.", "error");
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            Swal.fire("Error", "Hubo un problema al conectar con el servidor.", "error");
+        });
+}
+</script>
+{% endblock %}

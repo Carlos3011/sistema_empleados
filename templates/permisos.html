@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Solicitud de Permisos</h1>
+<p>Bienvenido, su ID de empleado es: {{ empleado_id }}</p>
+
+<form id="solicitar-permiso-form">
+    <div class="mb-3">
+        <label for="tipo_permiso" class="form-label">Tipo de Permiso</label>
+        <input type="text" id="tipo_permiso" name="tipo_permiso" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
+        <input type="datetime-local" id="fecha_inicio" name="fecha_inicio" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="fecha_fin" class="form-label">Fecha de Fin</label>
+        <input type="datetime-local" id="fecha_fin" name="fecha_fin" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Solicitar Permiso</button>
+</form>
+
+<script>
+document.getElementById("solicitar-permiso-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    fetch(`/permisos_solicitud?token={{ token }}`, {
+        method: "POST",
+        body: new FormData(this)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire("Éxito", "Permiso solicitado correctamente.", "success");
+        } else {
+            Swal.fire("Error", data.message || "No se pudo solicitar el permiso.", "error");
+        }
+    })
+    .catch(error => {
+        console.error(error);
+        Swal.fire("Error", "Hubo un problema al conectar con el servidor.", "error");
+    });
+});
+</script>
+{% endblock %}
