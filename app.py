@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template, redirect
 from services.auth_service import verify_token
 from services.asistencia_service import registrar_asistencia
-from services.permisos_service import solicitar_permiso
+from services.permisos_service import solicitar_permiso, obtener_permisos_usuario
 
 app = Flask(__name__)
 
@@ -65,6 +65,21 @@ def permisos_solicitud():
     if session and session['id_rol'] == 2:
         result = solicitar_permiso(session['id_empleado'], tipo_permiso, fecha_inicio, fecha_fin)
         return jsonify(result)
+    else:
+        return jsonify({'success': False, 'message': 'Acceso denegado o token inválido'}), 403
+
+@app.route('/mis_permisos', methods=['GET'])
+def mis_permisos():
+    token = request.args.get('token')
+    if not token:
+        return jsonify({'success': False, 'message': 'Token no proporcionado'}), 400
+
+    session = verify_token(token)
+    if session and session['id_rol'] == 2:
+        result = obtener_permisos_usuario(session['id_empleado'])
+        if result['success']:
+            return jsonify(result)
+        return jsonify({'success': False, 'message': 'Error al obtener permisos'}), 500
     else:
         return jsonify({'success': False, 'message': 'Acceso denegado o token inválido'}), 403
 

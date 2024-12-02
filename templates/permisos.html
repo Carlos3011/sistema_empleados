@@ -16,47 +16,138 @@
 </div>
 
 <div class="card mt-4 shadow-sm">
-    <div class="card-body p-4">
-        <form id="solicitar-permiso-form" class="needs-validation" novalidate>
-            <div class="row">
-                <div class="col-md-12 mb-4">
-                    <label for="tipo_permiso" class="form-label fw-bold">
-                        <i class="fas fa-tag me-2"></i>Tipo de Permiso
-                    </label>
-                    <select id="tipo_permiso" name="tipo_permiso" class="form-select form-select-lg" required>
-                        <option value="" selected disabled>Seleccione un tipo de permiso</option>
-                        <option value="Vacaciones">Vacaciones</option>
-                        <option value="Personal">Personal</option>
-                        <option value="Médico">Médico</option>
-                        <option value="Otros">Otros</option>
-                    </select>
-                </div>
-                
-                <div class="col-md-6 mb-4">
-                    <label for="fecha_inicio" class="form-label fw-bold">
-                        <i class="fas fa-calendar-alt me-2"></i>Fecha de Inicio
-                    </label>
-                    <input type="datetime-local" id="fecha_inicio" name="fecha_inicio" 
-                           class="form-control form-control-lg" required>
-                </div>
-                
-                <div class="col-md-6 mb-4">
-                    <label for="fecha_fin" class="form-label fw-bold">
-                        <i class="fas fa-calendar-alt me-2"></i>Fecha de Fin
-                    </label>
-                    <input type="datetime-local" id="fecha_fin" name="fecha_fin" 
-                           class="form-control form-control-lg" required>
-                </div>
-            </div>
+    <div class="card-body p-4 text-center">
+        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalSolicitud">
+            <i class="fas fa-plus-circle me-2"></i>Nueva Solicitud de Permiso
+        </button>
+    </div>
+</div>
 
-            <button type="submit" class="btn btn-primary btn-lg w-100 mt-3">
-                <i class="fas fa-paper-plane me-2"></i> Enviar Solicitud
-            </button>
-        </form>
+<div class="modal fade" id="modalSolicitud" tabindex="-1" aria-labelledby="modalSolicitudLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalSolicitudLabel">
+                    <i class="fas fa-calendar-check me-2"></i>Nueva Solicitud de Permiso
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="solicitar-permiso-form" class="needs-validation" novalidate>
+                    <div class="row">
+                        <div class="col-md-12 mb-4">
+                            <label for="tipo_permiso" class="form-label fw-bold">
+                                <i class="fas fa-tag me-2"></i>Tipo de Permiso
+                            </label>
+                            <select id="tipo_permiso" name="tipo_permiso" class="form-select form-select-lg" required>
+                                <option value="" selected disabled>Seleccione un tipo de permiso</option>
+                                <option value="Vacaciones">Vacaciones</option>
+                                <option value="Personal">Personal</option>
+                                <option value="Médico">Médico</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <label for="fecha_inicio" class="form-label fw-bold">
+                                <i class="fas fa-calendar-alt me-2"></i>Fecha de Inicio
+                            </label>
+                            <input type="datetime-local" id="fecha_inicio" name="fecha_inicio" 
+                                   class="form-control form-control-lg" required>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <label for="fecha_fin" class="form-label fw-bold">
+                                <i class="fas fa-calendar-alt me-2"></i>Fecha de Fin
+                            </label>
+                            <input type="datetime-local" id="fecha_fin" name="fecha_fin" 
+                                   class="form-control form-control-lg" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-3">
+                        <i class="fas fa-paper-plane me-2"></i> Enviar Solicitud
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4 shadow-sm">
+    <div class="card-body p-4">
+        <h3 class="mb-4 text-primary">
+            <i class="fas fa-list me-2"></i>Mis Permisos Solicitados
+        </h3>
+        <div class="table-responsive">
+            <table class="table table-hover table-striped align-middle">
+                <thead class="table-primary text-primary">
+                    <tr>
+                        <th class="text-center">Tipo</th>
+                        <th class="text-center">Fecha Inicio</th>
+                        <th class="text-center">Fecha Fin</th>
+                        <th class="text-center">Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="permisos-tabla">
+                    <!-- Los datos se cargarán aquí dinámicamente -->
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
+// Función para cargar los permisos
+function cargarPermisos() {
+    fetch(`/mis_permisos?token={{ token }}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const tbody = document.getElementById('permisos-tabla');
+                tbody.innerHTML = '';
+                
+                data.permisos.forEach(permiso => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="text-center">
+                            <span class="badge bg-primary">
+                                <i class="fas fa-tag me-2"></i>${permiso.tipo_permiso}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <i class="fas fa-calendar-alt me-2 text-primary"></i>
+                            ${new Date(permiso.fecha_inicio).toLocaleString()}
+                        </td>
+                        <td class="text-center">
+                            <i class="fas fa-calendar-alt me-2 text-primary"></i>
+                            ${new Date(permiso.fecha_fin).toLocaleString()}
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-${permiso.estado === 'pendiente' ? 'warning' : 
+                                                   permiso.estado === 'aprobado' ? 'success' : 'danger'} px-3 py-2">
+                                <i class="fas fa-${permiso.estado === 'pendiente' ? 'clock' : 
+                                                  permiso.estado === 'aprobado' ? 'check' : 'times'} me-2"></i>
+                                ${permiso.estado.toUpperCase()}
+                            </span>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } else {
+                Swal.fire("Error", "No se pudieron cargar los permisos.", "error");
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            Swal.fire("Error", "Hubo un problema al conectar con el servidor.", "error");
+        });
+}
+
+// Cargar permisos al iniciar la página
+document.addEventListener('DOMContentLoaded', cargarPermisos);
+
+// Recargar permisos después de enviar una nueva solicitud
 document.getElementById("solicitar-permiso-form").addEventListener("submit", function (e) {
     e.preventDefault();
     fetch(`/permisos_solicitud?token={{ token }}`, {
@@ -66,7 +157,15 @@ document.getElementById("solicitar-permiso-form").addEventListener("submit", fun
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            // Cerrar el modal después de enviar
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalSolicitud'));
+            modal.hide();
+            
+            // Limpiar el formulario
+            this.reset();
+            
             Swal.fire("Éxito", "Permiso solicitado correctamente.", "success");
+            cargarPermisos();
         } else {
             Swal.fire("Error", data.message || "No se pudo solicitar el permiso.", "error");
         }
