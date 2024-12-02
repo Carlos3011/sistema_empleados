@@ -1,24 +1,60 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Solicitud de Permisos</h1>
-<p>Bienvenido, su ID de empleado es: {{ empleado_id }}</p>
+<div class="card shadow-sm">
+    <div class="card-body text-center">
+        <h1 class="mb-3 text-primary">
+            <i class="fas fa-calendar-check me-2"></i>
+            Solicitud de Permisos
+        </h1>
+        <h4 class="text-muted">
+            Bienvenido(a) <strong class="text-primary">{{ nombre }}</strong>, 
+            complete el formulario para solicitar un permiso.
+        </h4>
+        <hr class="my-4">
+    </div>
+</div>
 
-<form id="solicitar-permiso-form">
-    <div class="mb-3">
-        <label for="tipo_permiso" class="form-label">Tipo de Permiso</label>
-        <input type="text" id="tipo_permiso" name="tipo_permiso" class="form-control" required>
+<div class="card mt-4 shadow-sm">
+    <div class="card-body p-4">
+        <form id="solicitar-permiso-form" class="needs-validation" novalidate>
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <label for="tipo_permiso" class="form-label fw-bold">
+                        <i class="fas fa-tag me-2"></i>Tipo de Permiso
+                    </label>
+                    <select id="tipo_permiso" name="tipo_permiso" class="form-select form-select-lg" required>
+                        <option value="" selected disabled>Seleccione un tipo de permiso</option>
+                        <option value="Vacaciones">Vacaciones</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Médico">Médico</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <label for="fecha_inicio" class="form-label fw-bold">
+                        <i class="fas fa-calendar-alt me-2"></i>Fecha de Inicio
+                    </label>
+                    <input type="datetime-local" id="fecha_inicio" name="fecha_inicio" 
+                           class="form-control form-control-lg" required>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <label for="fecha_fin" class="form-label fw-bold">
+                        <i class="fas fa-calendar-alt me-2"></i>Fecha de Fin
+                    </label>
+                    <input type="datetime-local" id="fecha_fin" name="fecha_fin" 
+                           class="form-control form-control-lg" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg w-100 mt-3">
+                <i class="fas fa-paper-plane me-2"></i> Enviar Solicitud
+            </button>
+        </form>
     </div>
-    <div class="mb-3">
-        <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
-        <input type="datetime-local" id="fecha_inicio" name="fecha_inicio" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label for="fecha_fin" class="form-label">Fecha de Fin</label>
-        <input type="datetime-local" id="fecha_fin" name="fecha_fin" class="form-control" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Solicitar Permiso</button>
-</form>
+</div>
 
 <script>
 document.getElementById("solicitar-permiso-form").addEventListener("submit", function (e) {

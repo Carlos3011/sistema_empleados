@@ -15,9 +15,11 @@ def asistencia():
 
     session = verify_token(token)
     if session and session['id_rol'] == 2:
-        return render_template('asistencia.html', empleado_id=session['id_empleado'], token=token)
+        nombre_completo = f"{session['nombre']} {session['apellido']}"
+        return render_template('asistencia.html', empleado_id=session['id_empleado'], nombre=nombre_completo, token=token)
     else:
         return jsonify({'success': False, 'message': 'Acceso denegado o token inválido'}), 403
+
 
 @app.route('/asistencia_registro', methods=['POST'])
 def asistencia_registro():
@@ -43,9 +45,11 @@ def permisos():
 
     session = verify_token(token)
     if session and session['id_rol'] == 2:
-        return render_template('permisos.html', empleado_id=session['id_empleado'], token=token)
+        nombre_completo = f"{session['nombre']} {session['apellido']}"
+        return render_template('permisos.html', empleado_id=session['id_empleado'], nombre=nombre_completo, token=token)
     else:
         return jsonify({'success': False, 'message': 'Acceso denegado o token inválido'}), 403
+
 
 @app.route('/permisos_solicitud', methods=['POST'])
 def permisos_solicitud():

@@ -8,23 +8,63 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Subsistema</a>
-            <div class="d-flex">
-                <a class="btn btn-outline-danger" href="/logout">Cerrar Sesión</a>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="bg-dark border-end" id="sidebar-wrapper">
+            <div class="sidebar-heading text-white text-center py-4">
+                <i class="fas fa-users-cog fa-2x mb-2"></i>
+                <h5 class="mt-2">SCA Empleados</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="/asistencia?token={{ token }}" class="list-group-item list-group-item-action bg-dark text-white">
+                    <i class="fas fa-clock me-2"></i>Registro de Asistencia
+                </a>
+                <a href="/permisos?token={{ token }}" class="list-group-item list-group-item-action bg-dark text-white">
+                    <i class="fas fa-calendar-alt me-2"></i>Solicitud de Permisos
+                </a>
+                <a href="/logout" class="list-group-item list-group-item-action bg-dark text-white">
+                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                </a>
             </div>
         </div>
-    </nav>
-
-    <div class="container mt-4">
-        {% block content %}
-        {% endblock %}
+        <!-- Page Content -->
+        <div id="page-content-wrapper" class="w-100">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-black border-bottom shadow-sm">
+                <div class="container-fluid">
+                    <button class="btn btn-outline-light rounded-circle p-2" id="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="d-flex align-items-center">
+                        <div class="bg-dark rounded-pill px-4 py-2">
+                            <h6 class="ms-2 my-0 text-white d-flex align-items-center">
+                                <i class="fas fa-user-circle me-2 fa-lg"></i>
+                                Bienvenido, <span class="fw-bold ms-1">{{ nombre }}</span>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class="container-fluid mt-4">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Script para el sidebar -->
+    <script>
+        document.getElementById("menu-toggle").addEventListener("click", function () {
+            document.getElementById("wrapper").classList.toggle("toggled");
+        });
+    </script>
 </body>
 </html>

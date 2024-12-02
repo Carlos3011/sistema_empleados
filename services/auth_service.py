@@ -2,13 +2,14 @@ from utils.db_connector import get_db_connection
 
 def verify_token(token):
     """
-    Verifica si el token existe y pertenece a un usuario con rol de empleado.
+    Verifica si el token existe y pertenece a un usuario con rol de empleado,
+    devolviendo su información.
     """
     connection = get_db_connection()
     try:
         cursor = connection.cursor(dictionary=True)
         query = """
-            SELECT e.id_empleado, e.id_rol
+            SELECT e.id_empleado, e.id_rol, e.nombre, e.apellido
             FROM sesiones s
             INNER JOIN empleados e ON s.id_empleado = e.id_empleado
             WHERE s.auth_token = %s
